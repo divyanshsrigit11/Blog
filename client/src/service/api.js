@@ -4,7 +4,7 @@ import { API_NOTIFICATION_MESSAGES, SERVICE_URLS } from '../constants/config';
 import { getAccessToken, getRefreshToken, setAccessToken, getType } from '../utils/common-utils';
 
 // const API_URL = 'https://blog-website-b1jg.onrender.com';
-const API_URL = 'https://blog-server-three-ruddy.vercel.app/';
+const API_URL = 'https://blog-server-three-ruddy.vercel.app';
 
 const axiosInstance = axios.create({
     baseURL: API_URL,
