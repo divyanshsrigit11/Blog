@@ -8,7 +8,7 @@ const API_URL = 'https://blog-server-three-ruddy.vercel.app';
 
 const axiosInstance = axios.create({
     baseURL: API_URL,
-    timeout: 10000, 
+    timeout: 30000, 
     headers: {
         "content-type": "application/json"
     }
