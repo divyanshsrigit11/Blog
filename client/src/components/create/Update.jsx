@@ -20,8 +20,9 @@ const Update = () => {
 
     const [post, setPost] = useState(initialPost);
     const [file, setFile] = useState('');
+    const [imageURL, setImageURL] = useState('');
 
-    const defaultURL = 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=1000&q=80';
+    const url = 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=1000&q=80';
     
     useEffect(() => {
         const fetchData = async () => {
@@ -43,17 +44,16 @@ const Update = () => {
                 const response = await API.uploadFile(data);
                 if (response.isSuccess) {
                     setPost(prev => ({ ...prev, picture: response.data }));
+                    setImageURL(response.data);    
                 }
             }
         }
         getImage();
-    }, [file]);
+    }, [file])
 
     const updateBlogPost = async () => {
-        let response = await API.updatePost(post);
-        if (response.isSuccess) {
-            navigate(`/details/${id}`);
-        }
+        await API.updatePost(post);
+        navigate(`/details/${id}`);
     }
 
     const handleChange = (e) => {
@@ -62,8 +62,7 @@ const Update = () => {
 
     return (
         <Box className="editor-container">
-            {/* Using the same banner style as CreatePost */}
-            <img src={post.picture || defaultURL} alt="post-banner" className="editor-banner" />
+            <img src={post.picture || url} alt="post" className="editor-banner" />
 
             <Box className="editor-form">
                 <label htmlFor="fileInput" className="add-icon-wrapper">
@@ -75,34 +74,26 @@ const Update = () => {
                     style={{ display: "none" }}
                     onChange={(e) => setFile(e.target.files[0])}
                 />
-                
                 <InputBase 
-                    className="editor-title-input"
-                    value={post.title}
+                    className="editor-title-input" 
                     onChange={handleChange} 
+                    value={post.title} 
                     name='title' 
                     placeholder="Title" 
                 />
-                
-                <Button 
-                    onClick={updateBlogPost} 
-                    className="btn-primary" 
-                    sx={{ px: 4 }}
-                >
-                    Update
-                </Button>
+                <Button onClick={() => updateBlogPost()} className="btn-primary" sx={{px: 4}}>Update</Button>
             </Box>
 
             <TextareaAutosize
                 className="editor-textarea"
-                minRows={10} 
-                placeholder="Edit your story..."
+                minRows={5}
+                placeholder="Tell your story..."
                 name='description'
-                value={post.description}
                 onChange={handleChange} 
+                value={post.description}
             />
         </Box>
-    );
+    )
 }
 
 export default Update;

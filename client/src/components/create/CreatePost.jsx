@@ -1,46 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-
-import { styled, Box, TextareaAutosize, Button, InputBase, FormControl  } from '@mui/material';
+import { Box, Button, InputBase, TextareaAutosize } from '@mui/material';
 import { AddCircle as Add } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { API } from '../../service/api';
 import { DataContext } from '../../context/DataProvider';
-
-const Container = styled(Box)(({ theme }) => ({
-    margin: '50px 100px',
-    [theme.breakpoints.down('md')]: {
-        margin: 0
-    }
-}));
-
-const Image = styled('img')({
-    width: '100%',
-    height: '50vh',
-    objectFit: 'cover'
-});
-
-const StyledFormControl = styled(FormControl)`
-    margin-top: 10px;
-    display: flex;
-    flex-direction: row;
-`;
-
-const InputTextField = styled(InputBase)`
-    flex: 1;
-    margin: 0 30px;
-    font-size: 25px;
-`;
-
-const Textarea = styled(TextareaAutosize)`
-    width: 100%;
-    border: none;
-    margin-top: 50px;
-    font-size: 18px;
-    &:focus-visible {
-        outline: none;
-    }
-`;
 
 const initialPost = {
     title: '',
@@ -59,7 +23,7 @@ const CreatePost = () => {
     const [file, setFile] = useState('');
     const { account } = useContext(DataContext);
 
-    const url = post.picture ? post.picture : 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wJTIwc2V0dXB8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80';
+    const url = post.picture ? post.picture : 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=1000&q=80';
     
     useEffect(() => {
         const getImage = async () => { 
@@ -69,13 +33,18 @@ const CreatePost = () => {
                 data.append("file", file);
                 
                 const response = await API.uploadFile(data);
-                post.picture = response.data;
+                // LOGIC FIX: Don't mutate state directly (post.picture = ...) 
+                // Use setPost to trigger the UI update so you see the image
+                setPost(prev => ({ ...prev, picture: response.data }));
             }
         }
         getImage();
-        post.categories = location.search?.split('=')[1] || 'All';
-        post.username = account.username;
-    }, [file])
+        setPost(prev => ({
+            ...prev,
+            categories: location.search?.split('=')[1] || 'All',
+            username: account.username
+        }));
+    }, [file, account.username, location.search])
 
     const savePost = async () => {
         await API.createPost(post);
@@ -87,12 +56,12 @@ const CreatePost = () => {
     }
 
     return (
-        <Container>
-            <Image src={url} alt="post" />
+        <Box className="editor-container">
+            <img src={url} alt="post" className="editor-banner" />
 
-            <StyledFormControl>
-                <label htmlFor="fileInput">
-                    <Add fontSize="large" color="action" />
+            <Box className="editor-form">
+                <label htmlFor="fileInput" className="add-icon-wrapper">
+                    <Add fontSize="large" />
                 </label>
                 <input
                     type="file"
@@ -100,18 +69,23 @@ const CreatePost = () => {
                     style={{ display: "none" }}
                     onChange={(e) => setFile(e.target.files[0])}
                 />
-                <InputTextField onChange={(e) => handleChange(e)} name='title' placeholder="Title" />
-                <Button onClick={() => savePost()} variant="contained" color="primary">Publish</Button>
-            </StyledFormControl>
+                <InputBase 
+                    className="editor-title-input" 
+                    onChange={handleChange} 
+                    name='title' 
+                    placeholder="Title" 
+                />
+                <Button onClick={() => savePost()} className="btn-primary" sx={{px: 4}}>Publish</Button>
+            </Box>
 
-            <Textarea
+            <TextareaAutosize
+                className="editor-textarea"
                 minRows={5} 
                 placeholder="Tell your story..."
                 name='description'
-                onChange={(e) => handleChange(e)} 
+                onChange={handleChange} 
             />
-
-        </Container>
+        </Box>
     )
 }
 
