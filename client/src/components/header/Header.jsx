@@ -1,105 +1,60 @@
-import { AppBar, Toolbar, styled, Button, Drawer, IconButton, List, ListItem, useTheme, useMediaQuery, Box } from '@mui/material';
+import { AppBar, Toolbar, Button, IconButton, Drawer, List, Box, useTheme, useMediaQuery } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
-
-const Component = styled(AppBar)`
-  background: #ffffff;
-  color: black;
-  box-shadow: none;
-  position: fixed;
-  top: 0;
-`;
-
-const Container = styled(Toolbar)`
-  display: flex;
-  justify-content: space-between;
-  padding: 0 20px;
-`;
-
-const MenuLinks = styled(Box)`
-  display: flex;
-  gap: 20px;
-  align-items: center;
-
-  & a {
-    text-decoration: none;
-    color: black;
-    font-weight: 500;
-    font-size: 1rem;
-    transition: color 0.3s;
-
-    &:hover {
-      color: #3f51b5;
-    }
-  }
-`;
-
-const StyledDrawer = styled(Drawer)`
-  & .MuiDrawer-paper {
-    padding: 20px;
-  }
-
-  & a {
-    text-decoration: none;
-    color: black;
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-bottom: 10px;
-    display: block;
-  }
-
-  & a:hover {
-    color: #3f51b5;
-  }
-`;
 
 const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const toggleDrawer = (open) => () => {
-    setDrawerOpen(open);
-  };
-
-  const logout = () => navigate('/account');
-
-  const links = (
-    <>
-      <Link to="/">HOME</Link>
-      <Link to="/about">ABOUT</Link>
-      <Link to="/contact">CONTACT</Link>
-      <Button onClick={logout} style={{ color: 'black' }}>LOGOUT</Button>
-    </>
-  );
+  const navItems = [
+    { label: 'HOME', path: '/' },
+    { label: 'ABOUT', path: '/about' },
+    { label: 'CONTACT', path: '/contact' },
+  ];
 
   return (
     <>
-      <Component>
-        <Container>
-          <Link to="/" style={{ fontWeight: 700, fontSize: '1.3rem', textDecoration: 'none', color: '#3f51b5' }}>
-            Divyansh's Blog
+      <AppBar className="navbar-custom" elevation={0} position="fixed">
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', maxWidth: 1200, width: '100%', margin: '0 auto' }}>
+          
+          <Link to="/" className="nav-logo">
+            Divyansh's <span>Blog</span>
           </Link>
+
           {isMobile ? (
             <>
-              <IconButton onClick={toggleDrawer(true)} color="inherit">
-                <MenuIcon />
-              </IconButton>
-              <StyledDrawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
-                <List>
-                  <ListItem>{links}</ListItem>
+              <IconButton onClick={() => setDrawerOpen(true)}><MenuIcon /></IconButton>
+              <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+                <List sx={{ width: 250, p: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  {navItems.map(item => (
+                    <Link key={item.path} to={item.path} className="nav-link" onClick={() => setDrawerOpen(false)}>
+                      {item.label}
+                    </Link>
+                  ))}
+                  <Button variant="contained" onClick={() => navigate('/account')} sx={{ bgcolor: 'var(--primary-color)' }}>Logout</Button>
                 </List>
-              </StyledDrawer>
+              </Drawer>
             </>
           ) : (
-            <MenuLinks>{links}</MenuLinks>
+            <Box sx={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+              {navItems.map(item => (
+                <Link 
+                  key={item.path} 
+                  to={item.path} 
+                  className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <Button onClick={() => navigate('/account')} className="logout-btn">Logout</Button>
+            </Box>
           )}
-        </Container>
-      </Component>
-
-      {/* Add spacing to prevent content hiding under fixed AppBar */}
+        </Toolbar>
+      </AppBar>
       <Toolbar />
     </>
   );
