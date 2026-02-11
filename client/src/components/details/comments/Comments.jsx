@@ -2,27 +2,39 @@ import { useState, useEffect, useContext } from 'react';
 import { Box, TextareaAutosize, Button, styled } from '@mui/material';
 
 import { DataContext } from '../../../context/DataProvider';
-
 import { API } from '../../../service/api';
 
 //components
 import Comment from './Comment';
 
 const Container = styled(Box)`
-    margin-top: 100px;
+    margin-top: 40px;
     display: flex;
+    align-items: flex-start;
+    gap: 15px;
 `;
 
 const Image = styled('img')({
-    width: 50,
-    height: 50,
-    borderRadius: '50%'
+    width: 45,
+    height: 45,
+    borderRadius: '50%',
+    border: '2px solid rgba(255, 255, 255, 0.1)'
 });
 
 const StyledTextArea = styled(TextareaAutosize)`
-    height: 100px !important;
     width: 100%; 
-    margin: 0 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 16px;
+    color: #ffffff;
+    font-family: inherit;
+    resize: none;
+    &:focus {
+        outline: none;
+        border-color: #6366f1;
+    }
 `;
 
 const initialValue = {
@@ -33,7 +45,7 @@ const initialValue = {
 }
 
 const Comments = ({ post }) => {
-    const url = 'https://static.thenounproject.com/png/12017-200.png'
+    const url = 'https://static.thenounproject.com/png/12017-200.png';
 
     const [comment, setComment] = useState(initialValue);
     const [comments, setComments] = useState([]);
@@ -64,7 +76,7 @@ const Comments = ({ post }) => {
 
     const addComment = async() => {
         await API.newComment(comment);
-        setComment(initialValue)
+        setComment(initialValue);
         setToggle(prev => !prev);
     }
     
@@ -73,20 +85,20 @@ const Comments = ({ post }) => {
             <Container>
                 <Image src={url} alt="dp" />   
                 <StyledTextArea 
-                    minRows={5} 
-                    placeholder="what's on your mind?"
+                    minRows={3} 
+                    placeholder="Join the discussion..."
                     onChange={(e) => handleChange(e)} 
                     value={comment.comments}
                 />
                 <Button 
                     variant="contained" 
-                    color="primary" 
-                    size="medium" 
-                    style={{ height: 40 }}
-                    onClick={(e) => addComment(e)}
+                    className="btn-primary" // Use the class we defined in index.css
+                    style={{ height: 45, minWidth: 100 }}
+                    onClick={addComment}
                 >Post</Button>             
             </Container>
-            <Box>
+            
+            <Box sx={{ mt: 2 }}>
                 {
                     comments && comments.length > 0 && comments.map(comment => (
                         <Comment 

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { API } from '../../service/api';
 import { DataContext } from '../../context/DataProvider';
 
+import logo from '../../assets/logo.png';
 const loginInitialValues = { username: '', password: '' };
 const signupInitialValues = { name: '', username: '', password: '' };
 
@@ -17,7 +18,7 @@ const Login = ({ isUserAuthenticated }) => {
     const { setAccount } = useContext(DataContext);
 
     // Using a cleaner logo or your brand name
-    const imageURL = 'https://www.sesta.it/wp-content/uploads/2021/03/logo-blog-sesta-trasparente.png';
+    const imageURL = logo;
 
     useEffect(() => {
         showError('');
@@ -52,6 +53,7 @@ const Login = ({ isUserAuthenticated }) => {
     return (
         <Box className="auth-container">
             <Box sx={{ pt: 5, textAlign: 'center' }}>
+                {/* Now it will load instantly from your own code */}
                 <img src={imageURL} alt="logo" style={{ width: 100 }} />
                 <Typography className="auth-title">
                     {account === 'login' ? 'Welcome Back' : 'Join the Community'}

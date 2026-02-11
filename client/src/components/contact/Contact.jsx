@@ -6,11 +6,11 @@ const Contact = () => {
         <Box className="contact-container">
             <Box className="contact-card">
                 <Typography variant="h3" className="contact-title">
-                    Let’s Connect!
+                    Let's Connect!
                 </Typography>
                 
                 <Typography className="contact-subtitle">
-                    I’m always open to discussing tech, collaborations, or any interesting opportunities.
+                    I'm always open to discussing tech, collaborations, or any interesting opportunities.
                 </Typography>
 
                 <Box className="contact-links-grid">

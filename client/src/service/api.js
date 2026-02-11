@@ -17,10 +17,16 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     function(config) {
         if (config.TYPE.params) {
-            config.params = config.TYPE.params
+            config.params = config.TYPE.params;
         } else if (config.TYPE.query) {
             config.url = config.url + '/' + config.TYPE.query;
         }
+
+        // SMART HEADER: If we are uploading a file, let the browser set the content-type
+        if (config.data instanceof FormData) {
+            delete config.headers['content-type'];
+        }
+
         const token = getAccessToken();
         if (token) {
             config.headers.authorization = token;

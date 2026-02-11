@@ -31,19 +31,34 @@ export const updatePost = async (request, response) => {
     }
 }
 
+// export const deletePost = async (request, response) => {
+//     try {
+//         const post = await Post.findByIdAndDelete(post._id);
+        
+//         if (!post) {
+//             return response.status(404).json({ msg: 'post not found' });
+//         }
+
+//         await post.delete()
+
+//         response.status(200).json('Post deleted successfully');
+//     } catch (error) {
+//         response.status(500).json({error: error.message})
+//     }
+// }
 export const deletePost = async (request, response) => {
     try {
-        const post = await Post.findByIdAndDelete(post._id);
+        // Use request.params.id because your route is /delete/:id [cite: 62]
+        const post = await Post.findByIdAndDelete(request.params.id);
         
         if (!post) {
-            return response.status(404).json({ msg: 'post not found' });
+            return response.status(404).json({ msg: 'Post not found' });
         }
 
-        await post.delete()
-
-        response.status(200).json('Post deleted successfully');
+        // findByIdAndDelete already removed it from MongoDB [cite: 58]
+        return response.status(200).json('Post deleted successfully');
     } catch (error) {
-        response.status(500).json({error: error.message})
+        return response.status(500).json({ error: error.message });
     }
 }
 
