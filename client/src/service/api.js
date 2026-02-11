@@ -22,7 +22,7 @@ axiosInstance.interceptors.request.use(
             config.url = config.url + '/' + config.TYPE.query;
         }
 
-        // SMART HEADER: If we are uploading a file, let the browser set the content-type
+        // ADD THIS BLOCK: If data is FormData, let the browser handle content-type
         if (config.data instanceof FormData) {
             delete config.headers['content-type'];
         }
