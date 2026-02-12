@@ -39,12 +39,12 @@ const CreatePost = () => {
             }
         }
         getImage();
-        setPost(prev => ({
-            ...prev,
-            categories: location.search?.split('=')[1] || 'All',
-            username: account.username
-        }));
-    }, [file, account.username, location.search]);
+        // setPost(prev => ({
+        //     ...prev,
+        //     categories: location.search?.split('=')[1] || 'All',
+        //     username: account.username
+        // }));
+    }, [file]); // [file, account.username, location.search]);
 
     const savePost = async () => {
         await API.createPost(post);

@@ -15,8 +15,12 @@ export const getImage = async (request, response) => {
     try { 
         // Ensure connection is established
         const conn = mongoose.connection;
+        if (!conn.db) {
+            return response.status(500).json({ msg: "Database connection not established" });
+        }
+
         const gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
-            bucketName: 'photos' // Ensure this matches upload.js
+            bucketName: 'photos' 
         });
         const gfs = grid(conn.db, mongoose.mongo);
         gfs.collection('photos');
