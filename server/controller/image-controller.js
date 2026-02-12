@@ -1,17 +1,17 @@
 import grid from 'gridfs-stream';
 import mongoose from 'mongoose';
 
-const url = 'http://localhost:8000';
+const url = 'https://blog-server-three-ruddy.vercel.app';
 
 
 let gfs, gridfsBucket;
 const conn = mongoose.connection;
 conn.once('open', () => {
     gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
-        bucketName: 'fs'
+        bucketName: 'photos'
     });
     gfs = grid(conn.db, mongoose.mongo);
-    gfs.collection('fs');
+    gfs.collection('photos');
 });
 
 
